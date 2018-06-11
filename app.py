@@ -148,8 +148,10 @@ dminfo = "The number of times the Drought Monitor reached the chosen drought sev
 countinfo = "The number of times the Drought Monitor reached or exceeded the chosen drought severity category and the rainfall index did not fall below the chosen strike level."
 ratioinfo = "The ratio between the number of times the rainfall index at the chosen strike level would not have paid during a drought according to the chosen drought severity category and the number of times that category category was met or exceeded. Only locations with 10 or more drought events are included."
 #description= open("README.txt").read() # Does anyone know how justify a text file for RMarkdown?
-
+description = ''
 description_text = '''
+
+
 
 
 Quantifying Pasture, Rangeland, and Forage Insurance Basis Risk using the United States Drought Monitor
@@ -309,7 +311,7 @@ app.layout = html.Div(
         html.Div([
                 html.Button(id = 'description_button',
                      children = 'Project Description',
-                     title = description,
+                     #title = description,
                      type='button'),
                 html.Div(
                 [
