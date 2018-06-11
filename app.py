@@ -4,11 +4,11 @@ from sys import platform
 import os
 
 if platform == 'win32':
-    homepath = "C:/users/user/github/"
-    os.chdir(homepath + "PRF-USDM")
+    homepath = "C:/users/user/github/PRF-USDM"
+    os.chdir(homepath)
 else:
-    homepath = "/prf-app/"
-    os.chdir(homepath+"PRF-USDM")
+    homepath = "/root/PRF-USDM"
+    os.chdir(homepath)
 
 #os.chdir("/var/www/FlaskApp/FlaskApp")
 from functions import *
