@@ -1,3 +1,15 @@
+# In[]:
+################################# Switching to/from Ubuntu VPS ##############################################################
+from sys import platform
+import os
+
+if platform == 'win32':
+    homepath = "C:/users/user/github/"
+    os.chdir(homepath + "PRF-USDM")
+else:
+    homepath = "/prf-app/"
+    os.chdir(homepath+"PRF-USDM")
+
 #os.chdir("/var/www/FlaskApp/FlaskApp")
 from functions import *
 # Empty Slice Warnings are  numerous and meaningless
@@ -129,12 +141,65 @@ latdict = dict(zip(lats, ys))
 londict2  = {y:x for x,y in londict.items()} # This is backwards to link simplified column
 latdict2  = {y:x for x,y in latdict.items()} # This is backwards to link simplified column
 
+######################### Total Project Description #########################################################################
 # Descriptions
 raininfo = "The number of times the rainfall index fell below the chosen strike level."
 dminfo = "The number of times the Drought Monitor reached the chosen drought severity category."
 countinfo = "The number of times the Drought Monitor reached or exceeded the chosen drought severity category and the rainfall index did not fall below the chosen strike level."
 ratioinfo = "The ratio between the number of times the rainfall index at the chosen strike level would not have paid during a drought according to the chosen drought severity category and the number of times that category category was met or exceeded. Only locations with 10 or more drought events are included."
+#description= open("README.txt").read() # Does anyone know how justify a text file for RMarkdown?
 
+description_text = '''
+
+
+Quantifying Pasture, Rangeland, and Forage Insurance Basis Risk using the United States Drought Monitor
+
+Weather-based index insurance is a relatively novel  type of plan  whereby payouts are  based on  an  independent  indicator of  loss, rather than  on direct measurements. The 
+index quantifies deviations from a baseline average value for a specific location and indemnifies when an observed value falls below a certain percentage of this normal value.
+Such  products are useful  where there is  no  readily  available measurement of direct  loss, or where problems of moral hazard and adverse  selection preclude  a traditional 
+loss-based insurance design. Cumulative rainfall  is  often used as the basis for  loss in weather-based index insurance  programs. It  is most often  used in  scenarios where 
+rainfall is assumed to correlate well with an  agricultural commodity such as  grain crop yields,  hay, or rangeland  forage production.  Many studies, though, have found that 
+simple  cumulative  rainfall is poorly correlated  with  plant  production which  also depends on  additional factors such as patterns of rainfall and evapotranspiration while 
+uptake  is  relatively low  for the  same  reason. This  discrepancy is  common in weather-based index  insurance and is generally referred to as basis risk. Basis risk can be 
+quantified if a tertiar measure of loss is employed,  ideally  a sample of  direct measurements, though  where this  is not available  alternative metrics can be  established.
+In Muneepeerakul et al  (2017)  researchers quantify the  basis risk involved with cumulative rainfall insurance for corn producers using a calculated measure of minimum yield 
+required to “break-even” based on production costs and commodity price. Basis risk here is defined as the probability that the rainfall index does not fall below a  percentage 
+of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as, 
+
+                                              Basis Risk = P[ RF > RF_strike    |  Y  <  Y_strike],
+                                              
+
+Where RF is the observed rainfall index value, RFstrike is the level of rainfall that  triggers payout, Y is the observed yield and Y_strike is the yield needed to recover 
+production expenses. The Pasture Rangeland and Forage insurance program (PRF)  of the USDA’s Risk Management Agency uses a rainfall index to compensate policyholders for added 
+feed and operation costs resulting  from grazing and  haying shortages due of drought.  Here, we apply the same approach as Muneepeerakul et al (2017) to  quantify the risk of 
+non-indemnification given loss. We do  not, however, have the access to any sort of  yield data for this industry as would be  available for grain  production.  Instead we are 
+using the United States Drought Monitor (USDM)  which is referred to as the “standard  operational drought  monitor for the  United States”   and  commonly used by ranchers to 
+inform  management  strategies. We  decided that the  USDM  is a viable  option for  the quantification of basis  risk both because we are assuming it to better correlate with 
+grassland impacts due to drought and because of its utility and familiarity to rangeland managers. 
+The PRF allows policyholders  to select from a  set of optional  payment threshold  levels: 70, 75,  80, 85, and 90% of average rainfall. Insurance periods are binned into 
+overlapping bi-monthly intervals; January to February, February to March, etc. The USDM categorizes drought by increasing levels of severity which is informed by drought index 
+values, such as  the Palmer Drought Severity Index, and expert assessments of local professionals.These categories range from mild drought (D0) to exceptional drought (D4) and
+are updated weekly.  A gridded variety of the USDM was created to  associate drought  categories to the grid cell  system that the PRF uses  to associate rainfall with  policy 
+locations. Because the  rainfall index is based on rainfall data average over  bi-monthly intervals, this USDM was created to reflect drought conditions over that same span of 
+time. Because it is  categorical, each bimonthly  period was associated with  the modal drought severity category of the 8 values reported for each grid cell. This potentially 
+excludes the influence of possible spikes in drought severity, but this method  is simple and easy to explain and is expected to generally reflect  accumulated drought impacts 
+given the slow and gradual nature of drought.
+To calculate basis risk,  we assume that  the five threshold  levels in the PRF  correspond to the 5 levels of  drought  severity in the USDM, such that, for any location,
+
+                                            Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike],
+                                            
+
+where RF is a vector PRF rainfall index values, RFstrike is one of the five threshold payment levels, USDM is a corresponding vector of observed USDM category, and USDM_strike 
+is the USDM level that is assumed to correspond RFstrike. Therefore, basis risk is defined as the probability, for a given location, that the PRF will not payout when the USDM
+indicates a drought. 
+
+Earth Lab – CIRES at the University of Colorado Boulder; 
+Author: Travis Williams; 
+Email: Travis.Williams@colorado.edu; 
+Date: 5-26-2018
+
+
+                        '''
 # Create global chart template
 mapbox_access_token = 'pk.eyJ1IjoidHJhdmlzc2l1cyIsImEiOiJjamZiaHh4b28waXNkMnptaWlwcHZvdzdoIn0.9pxpgXxyyhM6qEF_dcyjIQ'
 
@@ -157,7 +222,7 @@ layout = dict(
     title='Potential Payout Frequencies',
     mapbox=dict(
         accesstoken=mapbox_access_token,
-        style="dark",
+        style="light",
         center=dict(
             lon= -95.7,
             lat= 37.1
@@ -172,40 +237,92 @@ layout = dict(
 app.layout = html.Div(
     [   html.Div(# Pictures
             [
-                html.Img(
+                # Title and Image
+                html.A(html.Img(
                     src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/earthlab.png?raw=true",
                     className='one columns',
                     style={
-                        'height': '100',
-                        'width': '225',
+                        'height': '75',
+                        'width': '200',
                         'float': 'right',
-                        'position': 'relative',
-                    },
-                ),
-                html.Img(
+                        'position': 'static'
+                        },
+                            ),
+                        href = "https://www.colorado.edu/earthlab/",
+                        target = "_blank"
+                        ),
+                html.A(html.Img(
                     src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/wwa_logo2015.png?raw=true",
                     className='one columns',
                     style={
                         'height': '100',
                         'width': '300',
                         'float': 'right',
+                        'position': 'static',
+                        },
+                            ),
+                        href = "http://wwa.colorado.edu/",
+                        target = "_blank"
+                            ),
+                 html.A(html.Img(
+                    src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/nidis.png?raw=true",
+                    className='one columns',
+                    style={
+                        'height': '100',
+                        'width': '400',
+                        'float': 'right',
                         'position': 'relative',
-                    },
-                ),
+                        },
+                            ),
+                        href = "https://www.drought.gov/drought/",
+                        target = "_blank"
+                        ),
+                 html.A(html.Img(
+                    src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/cires.png?raw=true",
+                    className='one columns',
+                    style={
+                        'height': '100',
+                        'width': '200',
+                        'float': 'right',
+                        'position': 'relative',
+                        'margin-right':'20',
+                        },
+                            ),
+                        href = "https://cires.colorado.edu/",
+                        target = "_blank"
+                        ),
+
                     ],
                     className = "row",
 
             ),
-        html.Div(# One
+        html.Div(# Title
             [
                 html.H1(
                     'Pasture, Rangeland, and Forage Insurance and the US Drought Monitor: Risk of Non-Payment During Drought',
-                    className='eight columns',
+                    className='twelve columns',
                 ),
-
             ],
-            className='row'
+            className='row',
+            style = {'margin-top':'150'},
         ),
+        html.Div([
+                html.Button(id = 'description_button',
+                     children = 'Project Description',
+                     title = description,
+                     type='button'),
+                html.Div(
+                [
+                    dcc.Markdown(id = "description",
+                                children = description)
+                ],
+                style = {'text-align':'justify',
+                         'margin-left':'150',
+                         'margin-right':'150',
+                         'position':'center'}
+                ),
+                ]),
+
         html.Div(# Four
             [
                 html.Div(# Four-a
@@ -443,6 +560,16 @@ def compute_value(click,index_choice,usdm_level,strike_level,state_choice):
     global_store(signal)
     return signal
 
+@app.callback(Output('description', 'children'),
+              [Input('description_button', 'n_clicks')])
+def toggleDescription(click):
+    if not click:
+        click = 0
+    if click%2 == 1:
+        description = description_text
+    else:
+        description = ""
+    return description
 
 # In[]:
 ###############################################################################
@@ -489,11 +616,9 @@ def rainGraph(signal):
     grid2 = np.copy(grid)
     grid2[np.isnan(grid2)] = 0
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
-    pdf['grid'] = pdf['grid'].apply(int)
-    pdf['grid'] = pdf['grid'].apply(str)
-    pdf['printdata1'] = "Grid ID#: "
-    pdf['printdata'] =  "<br>    Data: "
-    pdf['grid2'] = pdf['printdata1'] +  pdf['grid'] +pdf['printdata'] + pdf['data'].apply(str)
+    pdf['grid'] = pdf['grid'].apply(int).apply(str)
+    pdf['data'] = pdf['data'].astype(float).round(3)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df = df_flat[np.isfinite(df_flat['data'])]
@@ -510,7 +635,7 @@ def rainGraph(signal):
 #        locationmode = 'USA-states',
         lon = df['lonbin'],
         lat = df['latbin'],
-        text = df['grid2'],
+        text = df['printdata'],
         mode = 'markers',
         marker = dict(
             colorscale = colorscale,
@@ -571,11 +696,9 @@ def droughtGraph(signal):
     grid2 = np.copy(grid)
     grid2[np.isnan(grid2)] = 0
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
-    pdf['grid'] = pdf['grid'].apply(int)
-    pdf['grid'] = pdf['grid'].apply(str)
-    pdf['printdata1'] = "Grid ID#: "
-    pdf['printdata'] =  "<br>    Data: "
-    pdf['grid2'] = pdf['printdata1'] +  pdf['grid'] +pdf['printdata'] + pdf['data'].apply(str)
+    pdf['grid'] = pdf['grid'].apply(int).apply(str)
+    pdf['data'] = pdf['data'].astype(float).round(3)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df= df_flat[np.isfinite(df_flat['data'])]
@@ -592,7 +715,7 @@ def droughtGraph(signal):
 #        locationmode = 'USA-states',
         lon = df['lonbin'],
         lat = df['latbin'],
-        text = df['grid2'],
+        text = df['printdata'],
         mode = 'markers',
         marker = dict(
             colorscale = colorscale,
@@ -655,12 +778,9 @@ def riskcountGraph(signal):
     grid2 = np.copy(grid)
     grid2[np.isnan(grid2)] = 0
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
-    pdf['grid'] = pdf['grid'].apply(int)
-    pdf['grid'] = pdf['grid'].apply(str)
-    pdf['printdata1'] = "Grid ID#: "
-    pdf['printdata'] =  "<br>    Data: "
-    pdf['grid2'] = pdf['printdata1'] +  pdf['grid'] +pdf['printdata'] + pdf['data'].apply(str)
-
+    pdf['grid'] = pdf['grid'].apply(int).apply(str)
+    pdf['data'] = pdf['data'].astype(float).round(3)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df= df_flat[np.isfinite(df_flat['data'])]
@@ -676,7 +796,7 @@ def riskcountGraph(signal):
 #        locationmode = 'USA-states',
         lon = df['lonbin'],
         lat = df['latbin'],
-        text = df['grid2'],
+        text = df['printdata'],
         mode = 'markers',
         marker = dict(
             colorscale = colorscale,
@@ -739,11 +859,9 @@ def basisGraph(signal):
     grid2 = np.copy(grid)
     grid2[np.isnan(grid2)] = 0
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
-    pdf['grid'] = pdf['grid'].apply(int)
-    pdf['grid'] = pdf['grid'].apply(str)
-    pdf['printdata1'] = "Grid ID#: "
-    pdf['printdata'] =  "<br>    Data: "
-    pdf['grid2'] = pdf['printdata1'] +  pdf['grid'] +pdf['printdata'] + pdf['data'].apply(np.round,decimals = 4).apply(str)
+    pdf['grid'] = pdf['grid'].apply(int).apply(str)
+    pdf['data'] = pdf['data'].astype(float).round(3)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df= df_flat[np.isfinite(df_flat['data'])]
@@ -760,7 +878,7 @@ def basisGraph(signal):
 #        locationmode = 'USA-states',
         lon = df['lonbin'],
         lat = df['latbin'],
-        text = df['grid2'],
+        text = df['printdata'],
         mode = 'markers',
         marker = dict(
             colorscale = colorscale,

@@ -1,39 +1,48 @@
+from sys import platform
 import os
-#import time
-#import inspect
-#import shutil
-#import glob
-#import linecache
-#import sys
-#import datetime
-#from datetime import timedelta
-#from itertools import chain
-import numpy as np
-#import numpy.ma as ma
-import pandas as pd
-#from osgeo import ogr, osr
-from tqdm import *
-#import copy
-import json
-from flask import Flask
-#from flask_cors import CORS
-#from flask_cache import Cache
-#from flask_caching import Cache
+
+if platform == 'win32':
+    homepath = "C:/users/user/github/PRF-USDM/"
+    os.chdir(homepath)
+    from flask_cache import Cache # I have this one working on Windows but not Linux
+    import gdal
+    import rasterio
+    import boto3
+    import urllib
+    import botocore
+    def PrintException():
+        exc_type, exc_obj, tb = sys.exc_info()
+        f = tb.tb_frame
+        lineno = tb.tb_lineno
+        filename = f.f_code.co_filename
+        linecache.checkcache(filename)
+        line = linecache.getline(filename, lineno, f.f_globals)
+        print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
+    gdal.UseExceptions()
+    print("GDAL version:" + str(int(gdal.VersionInfo('VERSION_NUM'))))
+else:
+    homepath = "/prf-app/"
+    os.chdir(homepath)
+    from flask_caching import Cache # I have this one working on Linux but not Windows :)
+    
+import copy
 import dash
 from dash.dependencies import Input, Output, State, Event
 import dash_table_experiments as dt
 import dash_core_components as dcc
 import dash_html_components as html
-import xarray as xr
+from flask import Flask
+import json
+import numpy as np
+import pandas as pd
 import plotly
-#import plotly.plotly as py
-#import plotly.tools as tls
-#from plotly import tools
-#from plotly.graph_objs import *
-#import plotly.graph_objs as go
-#import boto3
-#import urllib
-#import botocore
+from tqdm import *
+#from flask_cors import CORS
+#from flask_cache import Cache
+#from flask_caching import Cache
+import xarray as xr
+
 
 def PrintException():
     exc_type, exc_obj, tb = sys.exc_info()
