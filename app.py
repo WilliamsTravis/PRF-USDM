@@ -7,7 +7,7 @@ if platform == 'win32':
     homepath = "C:/users/user/github/PRF-USDM"
     os.chdir(homepath)
 else:
-    homepath = "/root/PRF-USDM"
+    homepath = "/home/ubuntu/PRF-USDM"
     os.chdir(homepath)
 
 #os.chdir("/var/www/FlaskApp/FlaskApp")

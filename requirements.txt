@@ -14,8 +14,10 @@ dash-renderer==0.13.0
 dash-table-experiments==0.6.0
 decorator==4.3.0
 Flask==1.0.2
+Flask-Caching==1.4.0
 Flask-Compress==1.4.0
 gunicorn==19.8.1
+hibagent==1.0.1
 idna==2.0
 ipython-genutils==0.2.0
 itsdangerous==0.24
@@ -25,7 +27,7 @@ jsonpointer==1.9
 jsonschema==2.6.0
 jupyter-core==4.4.0
 language-selector==0.1
-MarkupSafe==0.23
+MarkupSafe==1.0
 nbformat==4.4.0
 netCDF4==1.4.0
 numpy==1.14.4
