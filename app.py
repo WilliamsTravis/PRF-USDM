@@ -146,7 +146,7 @@ latdict2  = {y:x for x,y in latdict.items()} # This is backwards to link simplif
 raininfo = "The number of times the rainfall index fell below the chosen strike level."
 dminfo = "The number of times the Drought Monitor reached the chosen drought severity category."
 countinfo = "The number of times the Drought Monitor reached or exceeded the chosen drought severity category and the rainfall index did not fall below the chosen strike level."
-ratioinfo = "The ratio between the number of times the rainfall index at the chosen strike level would not have paid during a drought according to the chosen drought severity category and the number of times that category category was met or exceeded. Only locations with 10 or more drought events are included."
+ratioinfo = "The ratio between the number of times the rainfall index at the chosen strike level would not have paid during a drought according to the chosen USDM category and the number of times that the USDM category was met or exceeded. Only locations with 10 or more drought events are included."
 #description= open("README.txt").read() # Does anyone know how justify a text file for RMarkdown?
 description = ''
 description_text = '''
@@ -811,7 +811,7 @@ def riskcountGraph(signal):
             )
         )]
 
-    layout['title'] = ("Non-Payment Count<br>"+"%" + str(int(strike_level*100)) + "  &  " + DMlabels.get(usdm_level) + "+")
+    layout['title'] = ("Non-Payment Count<br>" + str(int(strike_level*100)) + "% Rain Index  &  " + DMlabels.get(usdm_level) + "+ USDM")
 
     layout['mapbox']['zoom'] = 2
     # Seventh wrap the data and layout into one
@@ -896,8 +896,8 @@ def basisGraph(signal):
     # Weight by the number of drought events
     average = str(round(np.nansum(droughtchances*basisrisk)/np.nansum(droughtchances),4))
 #    average = np.nanmean(basisrisk)
-    layout['title'] = ("Non-Payment Likelihood <br>"+ "%" + str(int(strike_level*100)) + "  &  " 
-                    + DMlabels.get(usdm_level) + "+  |  Average: " + average)
+    layout['title'] = ("Non-Payment Likelihood <br>" + str(int(strike_level*100)) + "% Rain Index  &  " 
+                    + DMlabels.get(usdm_level) + "+ USDM  |  Average: " + average)
 
 
 #    layout['title'] = typeof
