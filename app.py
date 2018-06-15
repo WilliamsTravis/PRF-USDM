@@ -565,7 +565,7 @@ def toggleDescription(click):
     if not click:
         click = 0
     if click%2 == 1:
-        description = dedent(description_text)
+        description = description_text
     else:
         description = ""
     return description
