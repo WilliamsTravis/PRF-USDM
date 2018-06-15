@@ -151,10 +151,7 @@ ratioinfo = "The ratio between the number of times the rainfall index at the cho
 description = ''
 description_text = '''
 
-
-
-
-Quantifying Pasture, Rangeland, and Forage Insurance Basis Risk using the United States Drought Monitor
+##### Quantifying Pasture, Rangeland, and Forage Insurance Basis Risk using the United States Drought Monitor
 
 Weather-based index insurance is a relatively novel  type of plan  whereby payouts are  based on  an  independent  indicator of  loss, rather than  on direct measurements. The 
 index quantifies deviations from a baseline average value for a specific location and indemnifies when an observed value falls below a certain percentage of this normal value.
@@ -166,12 +163,8 @@ uptake  is  relatively low  for the  same  reason. This  discrepancy is  common 
 quantified if a tertiar measure of loss is employed,  ideally  a sample of  direct measurements, though  where this  is not available  alternative metrics can be  established.
 In Muneepeerakul et al  (2017)  researchers quantify the  basis risk involved with cumulative rainfall insurance for corn producers using a calculated measure of minimum yield 
 required to “break-even” based on production costs and commodity price. Basis risk here is defined as the probability that the rainfall index does not fall below a  percentage 
-of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as, 
-
-                                              Basis Risk = P[ RF > RF_strike    |  Y  <  Y_strike],
-                                              
-
-Where RF is the observed rainfall index value, RFstrike is the level of rainfall that  triggers payout, Y is the observed yield and Y_strike is the yield needed to recover 
+of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as, **Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**
+Where RF is the observed rainfall index value, RF_strike is the level of rainfall that  triggers payout, Y is the observed yield and Y_strike is the yield needed to recover 
 production expenses. The Pasture Rangeland and Forage insurance program (PRF)  of the USDA’s Risk Management Agency uses a rainfall index to compensate policyholders for added 
 feed and operation costs resulting  from grazing and  haying shortages due of drought.  Here, we apply the same approach as Muneepeerakul et al (2017) to  quantify the risk of 
 non-indemnification given loss. We do  not, however, have the access to any sort of  yield data for this industry as would be  available for grain  production.  Instead we are 
@@ -187,21 +180,16 @@ time. Because it is  categorical, each bimonthly  period was associated with  th
 excludes the influence of possible spikes in drought severity, but this method  is simple and easy to explain and is expected to generally reflect  accumulated drought impacts 
 given the slow and gradual nature of drought.
 To calculate basis risk,  we assume that  the five threshold  levels in the PRF  correspond to the 5 levels of  drought  severity in the USDM, such that, for any location,
-
-                                            Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike],
-                                            
-
-where RF is a vector PRF rainfall index values, RFstrike is one of the five threshold payment levels, USDM is a corresponding vector of observed USDM category, and USDM_strike 
+**Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike]**, where RF is a vector PRF rainfall index values, RFstrike is one of the five threshold payment levels, USDM is a corresponding vector of observed USDM category, and USDM_strike 
 is the USDM level that is assumed to correspond RFstrike. Therefore, basis risk is defined as the probability, for a given location, that the PRF will not payout when the USDM
 indicates a drought. 
 
-Earth Lab – CIRES at the University of Colorado Boulder; 
+Earth Lab – CIRES at the University of Colorado Boulder;
 Author: Travis Williams; 
 Email: Travis.Williams@colorado.edu; 
 Date: 5-26-2018
 
-
-                        '''
+'''
 # Create global chart template
 mapbox_access_token = 'pk.eyJ1IjoidHJhdmlzc2l1cyIsImEiOiJjamZiaHh4b28waXNkMnptaWlwcHZvdzdoIn0.9pxpgXxyyhM6qEF_dcyjIQ'
 
@@ -304,26 +292,35 @@ app.layout = html.Div(
                     'Pasture, Rangeland, and Forage Insurance and the US Drought Monitor: Risk of Non-Payment During Drought',
                     className='twelve columns',
                 ),
-            ],
-            className='row',
-            style = {'margin-top':'150'},
-        ),
-        html.Div([
                 html.Button(id = 'description_button',
-                     children = 'Project Description',
+                     children = 'Project Description (Click)',
                      #title = description,
                      type='button'),
+            ],
+            className='row',
+            style = {
+                    'font-weight':'bold',
+                     'text-align':'center',
+                     'margin-top':'40',
+                     'margin-bottom':'40'
+                     },
+        ),
+        html.Div([
+
                 html.Div(
                 [
                     dcc.Markdown(id = "description",
                                 children = description)
                 ],
-                style = {'text-align':'justify',
+                style = {
+                         'text-align':'justify',
                          'margin-left':'150',
                          'margin-right':'150',
-                         'position':'center'}
+                         'position':'center'
+                         }
                 ),
-                ]),
+                ],
+),
 
         html.Div(# Four
             [
@@ -568,7 +565,7 @@ def toggleDescription(click):
     if not click:
         click = 0
     if click%2 == 1:
-        description = description_text
+        description = dedent(description_text)
     else:
         description = ""
     return description
@@ -814,8 +811,7 @@ def riskcountGraph(signal):
             )
         )]
 
-    layout['title'] = ("Non-Payment Count<br>%"+str(int(strike_level*100)) +" Rainfall Index Would Not Have Payed during "
-          + DMlabels.get(usdm_level) + "+ Drought" )
+    layout['title'] = ("Non-Payment Count<br>"+"%" + str(int(strike_level*100)) + "  &  " + DMlabels.get(usdm_level) + "+")
 
     layout['mapbox']['zoom'] = 2
     # Seventh wrap the data and layout into one
@@ -900,9 +896,8 @@ def basisGraph(signal):
     # Weight by the number of drought events
     average = str(round(np.nansum(droughtchances*basisrisk)/np.nansum(droughtchances),4))
 #    average = np.nanmean(basisrisk)
-
-    layout['title'] = ("Non-Payment Likelihood <br>"+ "%" + str(int(strike_level*100)) + " Rainfall Index & " 
-                    + DMlabels.get(usdm_level) + "+ USDM | Average: " + average)
+    layout['title'] = ("Non-Payment Likelihood <br>"+ "%" + str(int(strike_level*100)) + "  &  " 
+                    + DMlabels.get(usdm_level) + "+  |  Average: " + average)
 
 
 #    layout['title'] = typeof
