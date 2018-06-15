@@ -224,7 +224,7 @@ layout = dict(
     title='Potential Payout Frequencies',
     mapbox=dict(
         accesstoken=mapbox_access_token,
-        style="light",
+        style="dark",
         center=dict(
             lon= -95.7,
             lat= 37.1
@@ -901,9 +901,8 @@ def basisGraph(signal):
     average = str(round(np.nansum(droughtchances*basisrisk)/np.nansum(droughtchances),4))
 #    average = np.nanmean(basisrisk)
 
-    layout['title'] =     ("Non-Payment Likelihood <br>"
-          + "Rainfall Index at %"+str(int(strike_level*100))
-          + " strike level and " + DMlabels.get(usdm_level) +"+ USDM Severity | Average: " + average)
+    layout['title'] = ("Non-Payment Likelihood <br>"+ "%" + str(int(strike_level*100)) + " Rainfall Index & " 
+                    + DMlabels.get(usdm_level) + "+ USDM | Average: " + average)
 
 
 #    layout['title'] = typeof
