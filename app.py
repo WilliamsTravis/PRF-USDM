@@ -331,6 +331,7 @@ app.layout = html.Div(
                             id = 'index_choice',
                             options = indices,
                             multi = False,
+                            placeholder = "Rainfall Index",
                             value = "data/rainfall_arrays.npz"
                         ),
                         html.P("Filter by State"),
@@ -643,14 +644,14 @@ def rainGraph(signal):
             cmax = df['data'].max(),
             opacity=0.85,
             colorbar=dict(
-                title= "Frequency",
+                title= "Frequency<br>(out of 199)",
                 textposition = "auto",
                 orientation = "h"
                 )
             )
         )]
     
-    layout['title'] = " Rainfall Index | Sub %" + str(int(strike_level*100)) + " Frequency"
+    layout['title'] = " Rainfall Index | Sub " + str(int(strike_level*100)) + "% Frequency"
     layout['mapbox']['zoom'] = 2
     # Seventh wrap the data and layout into one
     figure = dict(data=data, layout=layout)
@@ -723,7 +724,7 @@ def droughtGraph(signal):
             cmax = df['data'].max(),
             opacity=0.85,
             colorbar=dict(
-                title= "Frequency",
+                title= "Frequency<br>(out of 199)",
                 textposition = "auto",
                 orientation = "h"
                 )
@@ -804,7 +805,7 @@ def riskcountGraph(signal):
             cmax = df['data'].max(),
             opacity=0.85,
             colorbar=dict(
-                title= "Frequency",
+                title= "Frequency<br>(out of 199)",
                 textposition = "auto",
                 orientation = "h"
                 )
