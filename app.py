@@ -232,8 +232,8 @@ app.layout = html.Div(
                     src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/earthlab.png?raw=true",
                     className='one columns',
                     style={
-                        'height': '75',
-                        'width': '200',
+                        'height': '40',
+                        'width': '100',
                         'float': 'right',
                         'position': 'static'
                         },
@@ -245,8 +245,8 @@ app.layout = html.Div(
                     src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/wwa_logo2015.png?raw=true",
                     className='one columns',
                     style={
-                        'height': '100',
-                        'width': '300',
+                        'height': '50',
+                        'width': '150',
                         'float': 'right',
                         'position': 'static',
                         },
@@ -258,8 +258,8 @@ app.layout = html.Div(
                     src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/nidis.png?raw=true",
                     className='one columns',
                     style={
-                        'height': '100',
-                        'width': '400',
+                        'height': '50',
+                        'width': '200',
                         'float': 'right',
                         'position': 'relative',
                         },
@@ -271,8 +271,8 @@ app.layout = html.Div(
                     src = "https://github.com/WilliamsTravis/Pasture-Rangeland-Forage/blob/master/data/cires.png?raw=true",
                     className='one columns',
                     style={
-                        'height': '100',
-                        'width': '200',
+                        'height': '50',
+                        'width': '100',
                         'float': 'right',
                         'position': 'relative',
                         'margin-right':'20',
