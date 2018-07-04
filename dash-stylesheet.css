@@ -171,9 +171,9 @@ input[type="button"] {
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
-  background-color: transparent;
+  background-color: #bbb;
   border-radius: 4px;
-  border: 1px solid #bbb;
+  border: 1px solid #555;
   cursor: pointer;
   box-sizing: border-box; }
 .button:hover,
@@ -187,7 +187,8 @@ input[type="submit"]:focus,
 input[type="reset"]:focus,
 input[type="button"]:focus {
   color: #333;
-  border-color: #888;
+  border: 2px solid #black;
+  font-weight: 700;
   outline: 0; }
 .button.button-primary,
 button.button-primary,
