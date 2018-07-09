@@ -1,4 +1,4 @@
-/*table of contents:
+﻿/*table of contents:
 - Base Styles
 - Typography
 - Links
@@ -53,7 +53,7 @@
   .three.columns                  { width: 22%;            }
   .four.columns                   { width: 33%;            }
   .five.columns                   { width: 39.3333333333%; }
-  .six.columns                    { width: 49.75%;          }
+  .six.columns                    { width: 49.75%; margin: 0 auto; } # Changed this to center
   .seven.columns                  { width: 56.6666666667%; }
   .eight.columns                  { width: 66.5%;          }
   .nine.columns                   { width: 74.0%;          }
