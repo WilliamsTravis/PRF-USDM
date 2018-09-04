@@ -167,19 +167,19 @@ of normal (strike), and fails to indemnify, when the revenue metric indicates yi
 
 **Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**, 
 
-where **RF** is the observed rainfall index value, **RF_strike**  is the level of  rainfall that triggers  payout, **Y** is the  observed yield and  **Y_strike** is the  yield 
-needed to recover  production  expenses. The  Pasture Rangeland and Forage  insurance program (PRF)  of  the USDA’s Risk Management Agency uses a rainfall index to  compensate 
-policyholders for added feed and operation costs resulting  from grazing and  haying shortages due of  drought.  Here, we apply the same approach as Muneepeerakul et al (2017) 
-to  quantify the risk of non-indemnification given  loss. We do  not, however,  have  the access  to  any sort of  yield data for this industry as would be available for grain  
-production.  Instead we are using the United States Drought Monitor (USDM)  which is referred to  as the “standard  operational drought  monitor  for the   United States”  and  
-commonly used by ranchers to inform  management  strategies. We  decided that the  USDM  is a viable  option for  the quantification of basis  risk because we are  assuming it 
+where **RF** is the observed rainfall index value, **RF_strike**  is the level of  rainfall that triggers  payout, **Y** is the  observed yield and  **Y_strike** is the  yield
+needed to recover  production  expenses. The  Pasture Rangeland and Forage  insurance program (PRF)  of  the USDA’s Risk Management Agency uses a rainfall index to  compensate
+policyholders for added feed and operation costs resulting  from grazing and  haying shortages due of  drought.  Here, we apply the same approach as Muneepeerakul et al (2017)
+to  quantify the risk of non-indemnification given  loss. We do  not, however,  have  the access  to  any sort of  yield data for this industry as would be available for grain
+production. Instead we are using the United States Drought Monitor (USDM)  which is referred to  as the “standard  operational  drought  monitor  for the   United States”  and
+commonly used by ranchers to inform  management  strategies. We  decided that the  USDM  is a viable  option for  the quantification of basis  risk because we are  assuming it
 to better correlate with grassland impacts due to drought and because of its utility and familiarity to rangeland managers. The PRF allows policyholders  to select from a  set
 of optional  payment threshold  levels: 70, 75,  80, 85, and 90% of average rainfall. Insurance periods are binned into overlapping bi-monthly intervals; January to  February,
 February to March, etc. The USDM categorizes drought by increasing levels of severity which is informed by drought index values, such as the Palmer Drought Severity Index, and
- expert assessments of local professionals.These categories range from mild drought (D0) to exceptional drought (D4) and are updated weekly.  A gridded variety of the USDM was 
- created to  associate drought  categories to the  grid cell  system that the PRF uses  to associate  rainfall with  policy locations. Because the  rainfall index is  based on 
- rainfall data average over  bi-monthly intervals, this USDM was created to reflect drought conditions over that same span of time. Because it is  categorical, each  bimonthly 
- period was associated with  the modal drought severity category of the 8 values reported for  each grid cell.  This potentially excludes the  influence of possible spikes  in 
+ expert assessments of local professionals.These categories range from mild drought (D0) to exceptional drought (D4) and are updated weekly.  A gridded variety of the USDM was
+ created to  associate drought  categories to the  grid cell  system that the PRF uses  to associate  rainfall with  policy locations. Because the  rainfall index is  based on
+ rainfall data average over  bi-monthly intervals, this USDM was created to reflect drought conditions over that same span of time. Because it is  categorical, each  bimonthly
+ period was associated with  the modal drought severity category of the 8 values reported for  each grid cell.  This potentially excludes the  influence of possible spikes  in
  drought severity, but this method is simple and easy to explain and is expected to generally reflect accumulated drought impacts given the slow and gradual nature of drought.
 To calculate basis risk,  we assume that  the five threshold  levels in the PRF  correspond to the 5 levels of  drought  severity in the USDM, such that, for any location:
 
