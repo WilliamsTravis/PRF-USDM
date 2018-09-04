@@ -160,29 +160,39 @@ loss-based insurance design. Cumulative rainfall  is  often used as the basis fo
 rainfall is assumed to correlate well with an  agricultural commodity such as  grain crop yields,  hay, or rangeland  forage production.  Many studies, though, have found that 
 simple  cumulative  rainfall is poorly correlated  with  plant  production which  also depends on  additional factors such as patterns of rainfall and evapotranspiration while 
 uptake  is  relatively low  for the  same  reason. This  discrepancy is  common in weather-based index  insurance and is generally referred to as basis risk. Basis risk can be 
-quantified if a tertiar measure of loss is employed,  ideally  a sample of  direct measurements, though  where this  is not available  alternative metrics can be  established.
+quantified if a tertiary measure of loss is employed, ideally  a sample of  direct measurements, though  where this  is not available  alternative metrics can be  established.
 In Muneepeerakul et al  (2017)  researchers quantify the  basis risk involved with cumulative rainfall insurance for corn producers using a calculated measure of minimum yield 
 required to “break-even” based on production costs and commodity price. Basis risk here is defined as the probability that the rainfall index does not fall below a  percentage 
-of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as, **Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**
-Where RF is the observed rainfall index value, RF_strike is the level of rainfall that  triggers payout, Y is the observed yield and Y_strike is the yield needed to recover 
-production expenses. The Pasture Rangeland and Forage insurance program (PRF)  of the USDA’s Risk Management Agency uses a rainfall index to compensate policyholders for added 
-feed and operation costs resulting  from grazing and  haying shortages due of drought.  Here, we apply the same approach as Muneepeerakul et al (2017) to  quantify the risk of 
-non-indemnification given loss. We do  not, however, have the access to any sort of  yield data for this industry as would be  available for grain  production.  Instead we are 
-using the United States Drought Monitor (USDM)  which is referred to as the “standard  operational drought  monitor for the  United States”   and  commonly used by ranchers to 
-inform  management  strategies. We  decided that the  USDM  is a viable  option for  the quantification of basis  risk both because we are assuming it to better correlate with 
-grassland impacts due to drought and because of its utility and familiarity to rangeland managers. 
-The PRF allows policyholders  to select from a  set of optional  payment threshold  levels: 70, 75,  80, 85, and 90% of average rainfall. Insurance periods are binned into 
-overlapping bi-monthly intervals; January to February, February to March, etc. The USDM categorizes drought by increasing levels of severity which is informed by drought index 
-values, such as  the Palmer Drought Severity Index, and expert assessments of local professionals.These categories range from mild drought (D0) to exceptional drought (D4) and
-are updated weekly.  A gridded variety of the USDM was created to  associate drought  categories to the grid cell  system that the PRF uses  to associate rainfall with  policy 
-locations. Because the  rainfall index is based on rainfall data average over  bi-monthly intervals, this USDM was created to reflect drought conditions over that same span of 
-time. Because it is  categorical, each bimonthly  period was associated with  the modal drought severity category of the 8 values reported for each grid cell. This potentially 
-excludes the influence of possible spikes in drought severity, but this method  is simple and easy to explain and is expected to generally reflect  accumulated drought impacts 
-given the slow and gradual nature of drought.
-To calculate basis risk,  we assume that  the five threshold  levels in the PRF  correspond to the 5 levels of  drought  severity in the USDM, such that, for any location,
-**Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike]**, where RF is a vector PRF rainfall index values, RFstrike is one of the five threshold payment levels, USDM is a corresponding vector of observed USDM category, and USDM_strike 
-is the USDM level that is assumed to correspond RFstrike. Therefore, basis risk is defined as the probability, for a given location, that the PRF will not payout when the USDM
-indicates a drought. 
+of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as:
+
+        **Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**, 
+
+where **RF** is the observed rainfall index value, **RF_strike**  is the level of  rainfall that triggers  payout, **Y** is the  observed yield and  **Y_strike** is the  yield 
+needed to recover  production  expenses. The  Pasture Rangeland and Forage  insurance program (PRF)  of  the USDA’s Risk Management Agency uses a rainfall index to  compensate 
+policyholders for added feed and operation costs resulting  from grazing and  haying shortages due of  drought.  Here, we apply the same approach as Muneepeerakul et al (2017) 
+to  quantify the risk of non-indemnification given  loss. We do  not, however,  have  the access  to  any sort of  yield data for this industry as would be available for grain  
+production.  Instead we are using the United States Drought Monitor (USDM)  which is referred to  as the “standard  operational drought  monitor  for the   United States”  and  
+commonly used by ranchers to inform  management  strategies. We  decided that the  USDM  is a viable  option for  the quantification of basis  risk because we are  assuming it 
+to better correlate with grassland impacts due to drought and because of its utility and familiarity to rangeland managers. The PRF allows policyholders  to select from a  set
+of optional  payment threshold  levels: 70, 75,  80, 85, and 90% of average rainfall. Insurance periods are binned into overlapping bi-monthly intervals; January to  February,
+February to March, etc. The USDM categorizes drought by increasing levels of severity which is informed by drought index values, such as the Palmer Drought Severity Index, and
+ expert assessments of local professionals.These categories range from mild drought (D0) to exceptional drought (D4) and are updated weekly.  A gridded variety of the USDM was 
+ created to  associate drought  categories to the  grid cell  system that the PRF uses  to associate  rainfall with  policy locations. Because the  rainfall index is  based on 
+ rainfall data average over  bi-monthly intervals, this USDM was created to reflect drought conditions over that same span of time. Because it is  categorical, each  bimonthly 
+ period was associated with  the modal drought severity category of the 8 values reported for  each grid cell.  This potentially excludes the  influence of possible spikes  in 
+ drought severity, but this method is simple and easy to explain and is expected to generally reflect accumulated drought impacts given the slow and gradual nature of drought.
+To calculate basis risk,  we assume that  the five threshold  levels in the PRF  correspond to the 5 levels of  drought  severity in the USDM, such that, for any location:
+
+        **Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike]**,
+
+where **RF** is a  vector PRF rainfall index  values, **RF_strike** is one of the five threshold payment levels, USDM is a corresponding vector of observed  USDM category, and 
+**USDM_strike** is the USDM level that is assumed to correspond **RF_strike**. Therefore, basis risk is defined as the probability, for a given location, that the PRF will not 
+payout when the USDM indicates a drought. 
+
+Citation in text:
+Muneepeerakul, C. P., Muneepeerakul, R., & Huffaker, R. G. (2017). Rainfall Intensity and Frequency Explain Production Basis Risk 
+    in Cumulative Rain Index Insurance. Earth’s Future, 5, 2167–1277. https://doi.org/10.1002/eft2.276
+
 
 Earth Lab – CIRES at the University of Colorado Boulder;
 Author: Travis Williams; 
@@ -448,7 +458,8 @@ app.layout = html.Div(
             ],
             className='row'
         ),
-        html.Div(id='signal', style={'display': 'none'})
+        html.Div(id='signal', style={'display': 'none'}),
+        html.Div(id='storage', style={'display': 'none'})
     ],
     className='ten columns offset-by-one'
 )
@@ -570,6 +581,11 @@ def toggleDescription(click):
     else:
         description = ""
     return description
+
+@app.callback(Output('storage','children'),
+        [Input('rain_graph', 'clickData')])
+def print(clickData):
+    print(str(clickData))
 
 # In[]:
 ###############################################################################
