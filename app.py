@@ -165,7 +165,7 @@ In Muneepeerakul et al  (2017)  researchers quantify the  basis risk involved wi
 required to “break-even” based on production costs and commodity price. Basis risk here is defined as the probability that the rainfall index does not fall below a  percentage 
 of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as:
 
-        **Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**, 
+**Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**, 
 
 where **RF** is the observed rainfall index value, **RF_strike**  is the level of  rainfall that triggers  payout, **Y** is the  observed yield and  **Y_strike** is the  yield 
 needed to recover  production  expenses. The  Pasture Rangeland and Forage  insurance program (PRF)  of  the USDA’s Risk Management Agency uses a rainfall index to  compensate 
@@ -183,7 +183,7 @@ February to March, etc. The USDM categorizes drought by increasing levels of sev
  drought severity, but this method is simple and easy to explain and is expected to generally reflect accumulated drought impacts given the slow and gradual nature of drought.
 To calculate basis risk,  we assume that  the five threshold  levels in the PRF  correspond to the 5 levels of  drought  severity in the USDM, such that, for any location:
 
-        **Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike]**,
+**Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike]**,
 
 where **RF** is a  vector PRF rainfall index  values, **RF_strike** is one of the five threshold payment levels, USDM is a corresponding vector of observed  USDM category, and 
 **USDM_strike** is the USDM level that is assumed to correspond **RF_strike**. Therefore, basis risk is defined as the probability, for a given location, that the PRF will not 
