@@ -162,7 +162,7 @@ simple  cumulative  rainfall is poorly correlated  with  plant  production which
 uptake  is  relatively low  for the  same  reason. This  discrepancy is  common in weather-based index  insurance and is generally referred to as basis risk. Basis risk can be 
 quantified if a tertiary measure of loss is employed, ideally  a sample of  direct measurements, though  where this  is not available  alternative metrics can be  established.
 In Muneepeerakul et al  (2017)  researchers quantify the  basis risk involved with cumulative rainfall insurance for corn producers using a calculated measure of minimum yield 
-required to “break-even” based on production costs and commodity price. Basis risk here is defined as the probability that the rainfall index does not fall below a  percentage 
+required to “break-even” based on production costs and commodity price. Basis risk here is defined as the likelihood that the rainfall index does not fall below a  percentage 
 of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as:
 
 **Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**, 
@@ -186,7 +186,7 @@ To calculate basis risk,  we assume that  the five threshold  levels in the PRF 
 **Basis Risk = P[ RF > RF_strike    |  USDM > USDM_strike]**,
 
 where **RF** is a  vector PRF rainfall index  values, **RF_strike** is one of the five threshold payment levels, USDM is a corresponding vector of observed  USDM category, and 
-**USDM_strike** is the USDM level that is assumed to correspond **RF_strike**. Therefore, basis risk is defined as the probability, for a given location, that the PRF will not 
+**USDM_strike** is the USDM level that is assumed to correspond **RF_strike**. Therefore, basis risk is defined as the likelihood, for a given location, that the PRF will not 
 payout when the USDM indicates a drought. 
 
 Citation in text:
@@ -902,7 +902,7 @@ def basisGraph(signal):
             cmax = df['data'].max(),
             opacity=0.85,
             colorbar=dict(
-                title= "Risk Ratio",
+                title= "Likelihood",
                 textposition = "auto",
                 orientation = "h"
                 )
