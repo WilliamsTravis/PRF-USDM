@@ -103,10 +103,11 @@ stateoptions.remove({'label': 'District of Columbia', 'value': 8})
 # Data Summary
 datatable = pd.read_csv("data/state_risks.csv", index_col=0)
 datatable = datatable.dropna()
-datatable = datatable[['State', 'Strike Level', 'DM Category', 'Strike Events', 
-                       'DM Events','Missed (sum)', 'Missed (ratio)']]
+keyorder = ('State', 'Strike Level', 'DM Category', 'Strike Events', 
+            'DM Events','Missed (sum)', 'Missed (ratio)')
 datatable = datatable[datatable.State != 'District of Columbia'].to_dict('RECORDS')
-datatable = [OrderedDict(d) for d in datatable]
+
+datatable = [OrderedDict((k, d[k]) for k in keyorder) for d in datatable]
 columnkey = [{'label': 'Strike Level: Rainfall Index Strike Level', 'value': 1},
              {'label': 'DM Category: Drought Monitor Drought Severity Category', 'value': 2},
              {'label': 'Missed (sum): Total Number of times the rainfall index would not have paid given the chosen US Drought Monitor Severity Category', 'value': 3},
