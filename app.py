@@ -106,20 +106,20 @@ datatable = datatable.dropna()
 datatable = datatable[['State', 'Strike Level', 'DM Category', 'Strike Events', 
                        'DM Events','Missed (sum)', 'Missed (ratio)']]
 datatable = datatable[datatable.State != 'District of Columbia'].to_dict('RECORDS')
-
+datatable = [OrderedDict(d) for d in datatable]
 columnkey = [{'label': 'Strike Level: Rainfall Index Strike Level', 'value': 1},
              {'label': 'DM Category: Drought Monitor Drought Severity Category', 'value': 2},
-             {'label': 'Missed (sum): Total Number of times the rainfall index would not have paid given the chosen US Drought Monitor Severity Category','value': 3},
-             {'label': 'Missed (ratio): Ratio between the number of times the USDM reached the chosen drought category and the numbers of time rainfall index would not have paid','value': 4},
+             {'label': 'Missed (sum): Total Number of times the rainfall index would not have paid given the chosen US Drought Monitor Severity Category', 'value': 3},
+             {'label': 'Missed (ratio): Ratio between the number of times the USDM reached the chosen drought category and the numbers of time rainfall index would not have paid', 'value': 4},
              {'label': 'Strike Events: Number of times the rainfall index fell below the strike level', 'value': 5},
              {'label': 'DM  Events: Number of times the USDM reached the chosen category', 'value': 6}]
 
 # Strike levels
-strikes = [{'label':'70%','value':.70},
-          {'label':'75%','value':.75},
-          {'label':'80%','value':.80},
-          {'label':'85%','value':.85},
-          {'label':'90%','value':.90}]
+strikes = [{'label': '70%', 'value': 0.70},
+           {'label': '75%', 'value': 0.75},
+           {'label': '80%', 'value': 0.80},
+           {'label': '85%', 'value': 0.85},
+           {'label':' 90%', 'value': 0.90}]
 
 DMs = [{'label':'D4','value':4},
        {'label':'D3','value':3},
