@@ -103,6 +103,8 @@ stateoptions.remove({'label': 'District of Columbia', 'value': 8})
 # Data Summary
 datatable = pd.read_csv("data/state_risks.csv", index_col=0)
 datatable = datatable.dropna()
+datatable = datatable[['State', 'Strike Level', 'DM Category', 'Strike Events', 
+                       'DM Events','Missed (sum)', 'Missed (ratio)']]
 datatable = datatable[datatable.State != 'District of Columbia'].to_dict('RECORDS')
 
 columnkey = [{'label': 'Strike Level: Rainfall Index Strike Level', 'value': 1},
