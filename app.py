@@ -10,8 +10,8 @@ else:
     homepath = "/home/ubuntu/PRF-USDM"
     os.chdir(homepath)
 
-#os.chdir("/var/www/FlaskApp/FlaskApp")
 from functions import *
+
 # Empty Slice Warnings are  numerous and meaningless
 import warnings
 warnings.filterwarnings("ignore") 
@@ -40,7 +40,9 @@ usdmodes = [[str(udates[i]),usdmodes[i]] for i in range(len(usdmodes))]
 app = dash.Dash(__name__)
 
 # I really need to get my own stylesheet, if anyone know how to do this...
-app.css.append_css({'external_url': 'https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css'})  # noqa: E501
+app.css.append_css({'external_url':
+    'https://cdn.rawgit.com/plotly/dash-app-stylesheets/' +
+    '2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css'})
 
 # Create server object
 server = app.server
@@ -53,7 +55,7 @@ server = app.server
 ############################ Create Lists and Dictionaries ####################
 ###############################################################################
 # Index Paths
-indices = [{'label':'Rainfall Index','value':'data/rainfall_indices.npz'}
+indices = [{'label': 'Rainfall Index', 'value': 'data/rainfall_indices.npz'}
 #           {'label':'PDSI','value':'D:\\data\\droughtindices\\palmer\\pdsi\\nad83\\'},
 #           {'label':'PDSI-Self Calibrated','value':'D:\\data\\droughtindices\\palmer\\pdsisc\\nad83\\'},
 #           {'label':'Palmer Z Index','value':'D:\\data\\droughtindices\\palmer\\pdsiz\\nad83\\'},
@@ -93,22 +95,22 @@ indexnames = {'data/rainfall_indices.npz': 'Rainfall Index'}
 # State options
 statefps = statefps.sort_values('state')
 statefps = statefps.reset_index()
-stateoptions = [{'label':statefps['state'][i],'value':statefps['statefp'][i]} for i in range(len(statefps['state']))]
-stateoptions.insert(0,{'label':'All','value':100})
-stateoptions.remove({'label':'District of Columbia','value':8})
+stateoptions = [{'label': statefps['state'][i], 
+                 'value': statefps['statefp'][i]} for i in range(len(statefps['state']))]
+stateoptions.insert(0, {'label': 'All','value': 100})
+stateoptions.remove({'label': 'District of Columbia', 'value': 8})
 
 # Data Summary
-datatable = pd.read_csv("data/state_risks.csv",index_col=0)
+datatable = pd.read_csv("data/state_risks.csv", index_col=0)
 datatable = datatable.dropna()
 datatable = datatable[datatable.State != 'District of Columbia'].to_dict('RECORDS')
 
-columnkey = [{'label':'Strike Level:            Rainfall Index Strike Level','value': 1},
-             {'label':'DM Category:             Drought Monitor Drought Severity Category','value': 2},
-             {'label':'Missed (sum):            Total Number of times the rainfall index would not have paid given the chosen US Drought Monitor Severity Category','value': 3},
-             {'label':'Missed (ratio):          Ratio between the number of times the USDM reached the chosen drought category and the numbers of time rainfall index would not have paid','value': 4},
-             {'label':'Strike Events:           Number of times the rainfall index fell below the strike level','value': 5},
-             {'label':'DM  Events:              Number of times the USDM reached the chosen category','value': 6}]
-
+columnkey = [{'label': 'Strike Level: Rainfall Index Strike Level', 'value': 1},
+             {'label': 'DM Category: Drought Monitor Drought Severity Category', 'value': 2},
+             {'label': 'Missed (sum): Total Number of times the rainfall index would not have paid given the chosen US Drought Monitor Severity Category','value': 3},
+             {'label': 'Missed (ratio): Ratio between the number of times the USDM reached the chosen drought category and the numbers of time rainfall index would not have paid','value': 4},
+             {'label': 'Strike Events: Number of times the rainfall index fell below the strike level', 'value': 5},
+             {'label': 'DM  Events: Number of times the USDM reached the chosen category', 'value': 6}]
 
 # Strike levels
 strikes = [{'label':'70%','value':.70},
