@@ -32,7 +32,7 @@ with np.load("data/usdm_dates.npz") as data:
     udates = data.f.arr_0
     data.close()
 usdmodes = [[str(udates[i]),usdmodes[i]] for i in range(len(usdmodes))]
-
+usdmodes = [u for u in usdmodes if int(u[0][-6:]) <= 201706]
 ###############################################################################
 ############################ Create the App Object ############################
 ###############################################################################
@@ -104,7 +104,7 @@ stateoptions.remove({'label': 'District of Columbia', 'value': 8})
 datatable = pd.read_csv("data/state_risks.csv", index_col=0)
 datatable = datatable.dropna()
 keyorder = ('State', 'Strike Level', 'DM Category', 'Strike Events', 
-            'DM Events','Missed (sum)', 'Missed (ratio)')
+            'DM Events', 'Missed (sum)', 'Missed (ratio)')
 datatable = datatable[datatable.State != 'District of Columbia'].to_dict('RECORDS')
 
 datatable = [OrderedDict((k, d[k]) for k in keyorder) for d in datatable]
@@ -304,9 +304,10 @@ app.layout = html.Div(
         html.Div(# Title
             [
                 html.H1(
-                    'Pasture, Rangeland, and Forage Insurance and the US Drought Monitor: Risk of Non-Payment During Drought',
+                    'Pasture, Rangeland, and Forage Insurance and the US Drought Monitor',
                     className='twelve columns',
                 ),
+                html.H1("Risk of Non-Payment During Drought, 2000 - 2017"),
                 html.Button(id = 'description_button',
                      children = 'Project Description (Click)',
                      #title = description,
@@ -489,6 +490,7 @@ def global_store(signal):
         statefilter2 = []
         statefilter2.append(statefilter)
         statefilter = statefilter2
+
     ## Get the index to compare to usdm - later there will be many choices
     # Load Rainfall Index
     with np.load("data/rainfall_indices.npz") as data:
@@ -587,10 +589,10 @@ def toggleDescription(click):
         description = ""
     return description
 
-@app.callback(Output('storage','children'),
-        [Input('rain_graph', 'clickData')])
-def print(clickData):
-    print(str(clickData))
+# @app.callback(Output('storage','children'),
+#         [Input('rain_graph', 'clickData')])
+# def print(clickData):
+#     print(str(clickData))
 
 # In[]:
 ###############################################################################
