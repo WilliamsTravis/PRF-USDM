@@ -148,8 +148,8 @@ latdict2  = {y:x for x,y in latdict.items()} # This is backwards to link simplif
 
 ######################### Total Project Description #########################################################################
 # Descriptions
-raininfo = "The number of times the rainfall index fell below the chosen strike level."
-dminfo = "The number of times the Drought Monitor reached the chosen drought severity category."
+raininfo = "The number of times that the rainfall index fell below the chosen strike level."
+dminfo = "The number of times that the bi-monthly modal value of the Drought Monitor reached the chosen drought severity category."
 countinfo = "The number of times the Drought Monitor reached or exceeded the chosen drought severity category and the rainfall index did not fall below the chosen strike level."
 ratioinfo = "The ratio between the number of times the rainfall index at the chosen strike level would not have paid during a drought according to the chosen USDM category and the number of times that the USDM category was met or exceeded. Only locations with 10 or more drought events are included."
 #description= open("README.txt").read() # Does anyone know how justify a text file for RMarkdown?
