@@ -881,7 +881,7 @@ def riskcountGraph(signal):
 
 
     # Get desired array
-    droughtchances = df[1]
+    hits = df[2]
 
     # Second, convert data back into an array, but in a from xarray recognizes
     array = np.array([hits], dtype="float32")
@@ -950,6 +950,7 @@ def basisGraph(signal):
     # Get data
     df = retrieve_data(signal)
     basisrisk = df[0]
+    droughtchances = df[1]
 
     # Transform the argument list back to normal
 #    if not signal:
