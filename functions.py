@@ -39,6 +39,7 @@ import pandas as pd
 import plotly
 from collections import OrderedDict
 from tqdm import *
+import time
 #from flask_cors import CORS
 #from flask_cache import Cache
 #from flask_caching import Cache

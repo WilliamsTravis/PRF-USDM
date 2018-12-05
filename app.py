@@ -437,6 +437,11 @@ app.layout = html.Div(
             ],
             className='row'
         ),
+        
+        # Seasonality bar chart
+        html.Div([dcc.Graph(id='seasonal_graph')]),
+        # html.Div(id='seasonal_graph'),
+
         # Data Table
          html.Div(#Seven
             [
@@ -465,7 +470,11 @@ app.layout = html.Div(
             className='row'
         ),
         html.Div(id='signal', style={'display': 'none'}),
-        html.Div(id='storage', style={'display': 'none'})
+        html.Div(id='rain_store', style={'display': 'none'}),
+        html.Div(id='drought_store', style={'display': 'none'}),
+        html.Div(id='hit_store', style={'display': 'none'}),
+        html.Div(id='basis_store', style={'display': 'none'}),
+        html.Div(id='targetid_store', style={'display': 'none'})
     ],
     className='ten columns offset-by-one'
 )
@@ -499,7 +508,7 @@ def global_store(signal):
     with np.load("data/rainfall_dates.npz") as data:
         rdates = data.f.arr_0
         data.close()
-    indexlist = [[str(rdates[i]),indexlist[i]] for i in range(len(indexlist))]
+    indexlist = [[str(rdates[i]), indexlist[i]] for i in range(len(indexlist))]
 
     # Now, to check both against each other, but first, match times
     udates = [m[0][-6:] for m in usdmodes]
@@ -508,29 +517,53 @@ def global_store(signal):
     usdms = [u for u in usdmodes if u[0][-6:] in idates]
 
     # Create a list of monthly arrays with 1's for the scenario
-    risks = [basisCheck(usdm = usdms[i],noaa = indexlist[i],
-                        strike = strike_level, dm = usdm_level) for i in range(len(usdms))]
+    risks = [basisCheck(usdm=usdms[i],noaa=indexlist[i], strike=strike_level,
+                        dm=usdm_level) for i in range(len(usdms))]
+    risklist = [["Risks" + usdms[i][0][-7:], risks[i]] for
+                i in range(len(risks))]
 
     # Sum them up
-    hits = np.nansum(risks,axis = 0)*mask
+    hits = np.nansum(risks, axis=0)*mask
 
+    # Risks on a monthly scale
+    months = ["{:02d}".format(i) for i in range(1,12)]
+    hits_monthly = [np.nansum([risklist[i][1] for i in range(len(risklist)) if risklist[i][0][-2:] in m], axis=0)*mask for m in months]
+    
+    
     # Create a list of monthly arrays with 1's for droughts
-    droughts = [droughtCheck(usdm = usdmodes[i],dm = usdm_level) for i in range(len(usdmodes))]
-    rainbelow = [droughtCheck2(rain = indexlist[i],strike = strike_level) for i in range(len(indexlist))]
+    droughts = [droughtCheck(usdm=usdmodes[i], dm=usdm_level) for
+                i in range(len(usdmodes))]
+    droughtlist = [["Droughts" + usdmodes[i][0][-7:], droughts[i]] for
+                    i in range(len(droughts))]
+
+    drought_monthly = [np.nansum([droughtlist[i][1] for
+                                  i in range(len(droughtlist)) if
+                                  droughtlist[i][0][-2:] in m], axis=0)*mask for m in months]
+
+    rainbelow = [droughtCheck2(rain=indexlist[i], strike=strike_level) for
+                 i in range(len(indexlist))]
+    rainlist = [["Triggers" + usdmodes[i][0][-7:], rainbelow[i]] for
+                    i in range(len(rainbelow))]
+    rain_monthly = [np.nansum([rainlist[i][1] for i in range(len(rainbelow)) if
+                               rainlist[i][0][-2:] in m], axis=0)*mask for m in months]
 
     # Sum and divide by time steps
-    droughtchances = np.nansum(droughts,axis = 0)*mask
-    rainchance = np.nansum(rainbelow,axis = 0)*mask
+    droughtchances = np.nansum(droughts, axis=0)*mask
+    rainchance = np.nansum(rainbelow, axis=0)*mask
 
     # Final Basis risk according to the USDM and Muneepeerakul et als method
     basisrisk = hits/droughtchances
-
+    
+    # Basisrisk on a monthly scale
+    basismonthly = [hits_monthly[i]/drought_monthly[i] for i in range(len(hits_monthly))]
+    
     # Possible threshold for inclusion
     # select only those cells with 10 or more dm events
     threshold = np.copy(droughtchances)
     threshold[threshold<10] = np.nan
     threshold = threshold*0+1
     basisrisk = basisrisk * threshold
+
 #     Filter if a state or states were selected
     if str(type(statefilter)) + str(statefilter) == "<class 'list'>[100]":
         statemask = np.copy(states)
@@ -556,7 +589,9 @@ def global_store(signal):
         typeof = str(type(statefilter)) + str(statefilter)
 
     # Package Returns for later
-    df = [basisrisk*statemask, droughtchances*statemask,hits*statemask,rainchance*statemask]
+    df = [basisrisk*statemask, droughtchances*statemask,
+          hits*statemask, rainchance*statemask,
+          rain_monthly, drought_monthly, hits_monthly, basismonthly]
 
     return df
 
@@ -574,6 +609,7 @@ def retrieve_data(signal):
 def compute_value(click,index_choice,usdm_level,strike_level,state_choice):
     # Package the function arguments
     signal = json.dumps([index_choice,usdm_level,strike_level,state_choice])
+
     # compute value and send a signal when done
     global_store(signal)
     return signal
@@ -589,22 +625,91 @@ def toggleDescription(click):
         description = ""
     return description
 
-# @app.callback(Output('storage','children'),
-#         [Input('rain_graph', 'clickData')])
-# def print(clickData):
-#     print(str(clickData))
+@app.callback(Output('rain_store','children'),
+              [Input('rain_graph','clickData')])
+def rainOut(click):
+    if click is None:
+        click = {'points': [{'curveNumber': 0, 'pointNumber': 5483,
+                             'pointIndex': 5483, 'lon': -113, 'lat': 40.75,
+                             'text': 'GRID #: 24969<br>Index Triggers: 75.0',
+                             'marker.color': 75}]}
+    when = time.time()
+    print("Rain click: " + str(click) + ", time: " + str(when))
+    return json.dumps([click, when])
+
+@app.callback(Output('drought_store','children'),
+              [Input('drought_graph','clickData')])
+def droughtOut(click):
+    if click is None:
+        click = {'points': [{'curveNumber': 0, 'pointNumber': 5483,
+                             'pointIndex': 5483, 'lon': -113, 'lat': 40.75,
+                             'text': 'GRID #: 24969<br>Index Triggers: 75.0',
+                             'marker.color': 75}]}
+    when = time.time()
+    print("Drought Click: "+ str(click) + ", time: " + str(when))
+    return json.dumps([click, when])
+
+@app.callback(Output('hit_store','children'),
+              [Input('hit_graph','clickData')])
+def hitOut(click):
+    if click is None:
+        click = {'points': [{'curveNumber': 0, 'pointNumber': 5483,
+                             'pointIndex': 5483, 'lon': -113, 'lat': 40.75,
+                             'text': 'GRID #: 24969<br>Index Triggers: 75.0',
+                             'marker.color': 75}]}
+    when = time.time()
+    print("Hit Click: "+ str(click) + ", time: " + str(when))
+    return json.dumps([click, when])
+
+@app.callback(Output('basis_store','children'),
+              [Input('basis_graph','clickData')])
+def basisOut(click):
+    if click is None:
+        click = {'points': [{'curveNumber': 0, 'pointNumber': 5483,
+                             'pointIndex': 5483, 'lon': -113, 'lat': 40.75,
+                             'text': 'GRID #: 24969<br>Index Triggers: 75.0',
+                             'marker.color': 75}]}
+    when = time.time()
+    print("Chance Click: "+ str(click) + ", time: " + str(when))
+    return json.dumps([click, when])
+
+@app.callback(Output('targetid_store', 'children'),
+              [Input('rain_store', 'children'),
+               Input('drought_store', 'children'),
+               Input('hit_store', 'children'),
+               Input('basis_store', 'children')])
+def whichGrid(rain_store, drought_store, hit_store, basis_store):
+    rs, rt = json.loads(rain_store)
+    ds, dt = json.loads(drought_store)
+    hs, ht = json.loads(hit_store)
+    bs, bt = json.loads(basis_store)
+
+    clicks = [rs,ds, hs, bs]
+    times = [rt, dt, ht, bt]
+    recent_time = max(times)
+    recent_index = times.index(recent_time)
+    recent_click = clicks[recent_index]
+    print(str(recent_click))
+    data = recent_click['points'][0]['text'] 
+    print(str(data))
+    targetid = int(data[data.index(":")+1: data.index("<")])
+    print("TARGETID: " + str(targetid))
+    string = data[data.index(">")+1:]
+    map_selection = string[:string.index(":")]
+    return json.dumps([targetid, map_selection])
 
 # In[]:
 ###############################################################################
 ######################### Graph Builders ######################################
 ###############################################################################
 @app.callback(Output('rain_graph', 'figure'),
-              [Input('signal','children')])
+              [Input('signal', 'children')])
 def rainGraph(signal):
     # Get data
     if not signal:
         signal = source_signal
     df = retrieve_data(signal)
+
     # Transform the argument list back to normal
     signal = json.loads(signal)
 
@@ -613,35 +718,30 @@ def rainGraph(signal):
     usdm_level = signal[1]
     strike_level = signal[2]
 
-
     # Get desired array
     payouts = df[3]
 
     # Second, convert data back into an array, but in a from xarray recognizes
-    array = np.array([payouts],dtype = "float32")
+    array = np.array([payouts], dtype="float32")
 
     # Third, change the source array to this one. Source is defined up top
     source.data = array
 
     # Fourth, bin the values into lat, long points for the dataframe
-    dfs = xr.DataArray(source, name = "data")
+    dfs = xr.DataArray(source, name="data")
     pdf = dfs.to_dataframe()
     step = .25
     to_bin = lambda x: np.floor(x / step) * step
-#    pdf['data'] = pdf['data'].fillna(999)
-#    pdf['data'] = pdf['data'].astype(int)
-#    pdf['data'] = pdf['data'].astype(str)
-#    pdf['data'] = pdf['data'].replace('-1', np.nan)
     pdf["latbin"] = pdf.index.get_level_values('y').map(to_bin)
     pdf["lonbin"] = pdf.index.get_level_values('x').map(to_bin)
     pdf['gridx']= pdf['lonbin'].map(londict)
     pdf['gridy']= pdf['latbin'].map(latdict)
     grid2 = np.copy(grid)
     grid2[np.isnan(grid2)] = 0
-    pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
+    pdf['grid'] = grid2[pdf['gridy'], pdf['gridx']]
     pdf['grid'] = pdf['grid'].apply(int).apply(str)
     pdf['data'] = pdf['data'].astype(float).round(3)
-    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] + "<br>Index Triggers: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df = df_flat[np.isfinite(df_flat['data'])]
@@ -721,7 +821,7 @@ def droughtGraph(signal):
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
     pdf['grid'] = pdf['grid'].apply(int).apply(str)
     pdf['data'] = pdf['data'].astype(float).round(3)
-    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] + "<br>USDM Triggers: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df= df_flat[np.isfinite(df_flat['data'])]
@@ -781,16 +881,16 @@ def riskcountGraph(signal):
 
 
     # Get desired array
-    [basisrisk, droughtchances, hits, rainchance] = df
+    droughtchances = df[1]
 
     # Second, convert data back into an array, but in a from xarray recognizes
-    array = np.array([hits],dtype = "float32")
+    array = np.array([hits], dtype="float32")
 
     # Third, change the source array to this one. Source is defined up top
     source.data = array
 
     # Fourth, bin the values into lat, long points for the dataframe
-    dfs = xr.DataArray(source, name = "data")
+    dfs = xr.DataArray(source, name="data")
     pdf = dfs.to_dataframe()
     step = .25
     to_bin = lambda x: np.floor(x / step) * step
@@ -803,7 +903,7 @@ def riskcountGraph(signal):
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
     pdf['grid'] = pdf['grid'].apply(int).apply(str)
     pdf['data'] = pdf['data'].astype(float).round(3)
-    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] + "<br>Count: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df= df_flat[np.isfinite(df_flat['data'])]
@@ -849,7 +949,7 @@ def riskcountGraph(signal):
 def basisGraph(signal):
     # Get data
     df = retrieve_data(signal)
-    [basisrisk, droughtchances, hits, rainchance] = df
+    basisrisk = df[0]
 
     # Transform the argument list back to normal
 #    if not signal:
@@ -883,7 +983,7 @@ def basisGraph(signal):
     pdf['grid'] = grid2[pdf['gridy'],pdf['gridx']]
     pdf['grid'] = pdf['grid'].apply(int).apply(str)
     pdf['data'] = pdf['data'].astype(float).round(3)
-    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Data: " + pdf['data'].apply(str)
+    pdf['printdata'] = "GRID #: " + pdf['grid'] +"<br>Likelihood: " + pdf['data'].apply(str)
     groups = pdf.groupby(("latbin", "lonbin"))
     df_flat = pdf.drop_duplicates(subset=['latbin', 'lonbin'])
     df= df_flat[np.isfinite(df_flat['data'])]
@@ -918,11 +1018,11 @@ def basisGraph(signal):
 
     # Return order to help with average value:
     # Weight by the number of drought events
-    average = str(round(np.nansum(droughtchances*basisrisk)/np.nansum(droughtchances),4))
+    average = str(round(np.nansum(droughtchances*basisrisk)/np.nansum(droughtchances), 4))
+
 #    average = np.nanmean(basisrisk)
     layout['title'] = ("Non-Payment Likelihood <br>" + str(int(strike_level*100)) + "% Rain Index  &  " 
                     + DMlabels.get(usdm_level) + "+ USDM  |  Average: " + average)
-
 
 #    layout['title'] = typeof
 #     Seventh wrap the data and layout into one
@@ -930,11 +1030,108 @@ def basisGraph(signal):
 #    return {'figure':figure,'info': index_package_all}
     return figure
 
+@app.callback(Output('seasonal_graph', 'figure'),
+              [Input('signal', 'children'),
+               Input('targetid_store', 'children')])
+def seasonalGraph(signal, targetids):
+    '''
+    This took some amatuer redirection to get the right data set for this
+    graph. It's a little slow and messy, if I get a chance to devote more
+    time and money it could be much quicker
+    '''
+    df = retrieve_data(signal)
+    print(signal)
+    signal = json.loads(signal)
+    targetids = json.loads(targetids)
+    targetid = targetids[0]
+    map_choice = targetids[1]
+    graph_selections = {'Index Triggers': 0,
+                        'USDM Triggers': 1,
+                        'Count': 2,
+                        'Likelihood': 3}
+    title_selections = {'Index Triggers': "Rainfall Trigger Frequency",
+                        'USDM Triggers': 'USDM "Trigger" Frequency',
+                        'Count': '"Missed Payments" Count',
+                        'Likelihood': '"Missed Payment" Likelihood'}
+    y_limits = {'Index Triggers': 20,
+                'USDM Triggers': 20,
+                'Count': 20,
+                'Likelihood': 1}
+
+    map_index = graph_selections[map_choice]
+    title = title_selections[map_choice]
+    ylim = y_limits[map_choice]
+    series = df[map_index + 4]
+
+    # Catch the target grid cell
+    index = np.where(grid == targetid)
+
+    # For the x axis and value matching
+    intervals = [format(int(interval),'02d') for interval in range(1,12)]
+    months = {1: 'Jan-Feb',
+              2: 'Feb-Mar',
+              3: 'Mar-Apr',
+              4: 'Apr-May',
+              5: 'May-Jun',
+              6: 'Jun-Jul',
+              7: 'Jul-Aug',
+              8: 'Aug-Sep',
+              9: 'Sep-Oct',
+              10: 'Oct-Nov',
+              11: 'Nov-Dec'}
+
+    # Create the time series of data at that gridcell
+    valuelist = [float(s[index]) for s in series]
+
+
+    # For display
+    intlabels = [months.get(i) for i in range(1, 12)]
+    x = np.arange(len(intervals))
+    yaxis = dict(autorange=False,
+                 range=[0, ylim],
+                 type='linear'
+                )
+    layout_count = copy.deepcopy(layout)
+    colors = [
+            "#050f51",  # 'darkblue',
+            "#1131ff",  # 'blue',
+            "#09bc45",  # 'somegreensishcolor',
+            "#6cbc0a",  # 'yellowgreen',
+            "#0d9e00",  # 'forestgreen',
+            "#075e00",  # 'darkgreen',
+            "#1ad10a",  # 'green',
+            "#fff200",  # 'yellow',
+            "#ff8c00",  # 'red-orange',
+            "#b7a500",  # 'darkkhaki',
+            "#6a7dfc"   # 'differentblue'
+            ]
+    
+    data = [
+        dict(
+            type='bar',
+            marker = dict(color=colors,
+                          line=dict(width=3.5,
+                                    color="#000000")),
+            x=x,
+            y=valuelist
+        )]
+
+    layout_count = copy.deepcopy(layout)
+    layout_count['title'] = (title + ' - Monthly Trends <br> Grid ID: '
+                             + str(int(targetid)) + "</b>")
+    layout_count['xaxis'] = dict(title="Insurance Interval",
+                                 tickvals=x, ticktext=intlabels,
+                                 tickangle=45)
+    layout_count['margin'] = dict(l=55, r=35, b=85, t=95, pad=4)
+    layout_count['plot_bgcolor'] = "#efefef"
+    layout_count['paper_bgcolor'] = "#020202"
+    layout_count['yaxis'] = yaxis
+
+    figure = dict(data=data, layout=layout_count)
+
+    return figure
 
 # In[]:
 # Main
 if __name__ == '__main__':
-    app.run_server()#,debug  =True
-
-
-
+    app.run_server()
