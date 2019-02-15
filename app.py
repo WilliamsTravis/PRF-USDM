@@ -14,7 +14,7 @@ from functions import *
 
 # Empty Slice Warnings are  numerous and meaningless
 import warnings
-warnings.filterwarnings("ignore") 
+warnings.filterwarnings("ignore")
 
 ############################ Get Data #########################################
 source = xr.open_dataarray("data/source_array.nc")
@@ -95,7 +95,7 @@ indexnames = {'data/rainfall_indices.npz': 'Rainfall Index'}
 # State options
 statefps = statefps.sort_values('state')
 statefps = statefps.reset_index()
-stateoptions = [{'label': statefps['state'][i], 
+stateoptions = [{'label': statefps['state'][i],
                  'value': statefps['statefp'][i]} for i in range(len(statefps['state']))]
 stateoptions.insert(0, {'label': 'All','value': 100})
 stateoptions.remove({'label': 'District of Columbia', 'value': 8})
@@ -103,7 +103,7 @@ stateoptions.remove({'label': 'District of Columbia', 'value': 8})
 # Data Summary
 datatable = pd.read_csv("data/state_risks.csv", index_col=0)
 datatable = datatable.dropna()
-keyorder = ('State', 'Strike Level', 'DM Category', 'Strike Events', 
+keyorder = ('State', 'Strike Level', 'DM Category', 'Strike Events',
             'DM Events', 'Missed (sum)', 'Missed (ratio)')
 datatable = datatable[datatable.State != 'District of Columbia'].to_dict('RECORDS')
 
@@ -170,7 +170,7 @@ In Muneepeerakul et al  (2017)  researchers quantify the  basis risk involved wi
 required to “break-even” based on production costs and commodity price. Basis risk here is defined as the likelihood that the rainfall index does not fall below a  percentage 
 of normal (strike), and fails to indemnify, when the revenue metric indicates yields below the chosen threshold. This can be expressed as:
 
-**Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**, 
+**Basis Risk = P[ RF > RF_strike |  Y  <  Y_strike]**,
 
 where **RF** is the observed rainfall index value, **RF_strike**  is the level of  rainfall that triggers  payout, **Y** is the  observed yield and  **Y_strike** is the  yield
 needed to recover  production  expenses. The  Pasture Rangeland and Forage  insurance program (PRF)  of  the USDA’s Risk Management Agency uses a rainfall index to  compensate
@@ -773,7 +773,7 @@ def rainGraph(signal):
                 )
             )
         )]
-    
+
     layout['title'] = " Rainfall Index | Sub " + str(int(strike_level*100)) + "% Frequency"
     layout['mapbox']['zoom'] = 2
     # Seventh wrap the data and layout into one
@@ -1106,7 +1106,7 @@ def seasonalGraph(signal, targetids):
             "#b7a500",  # 'darkkhaki',
             "#6a7dfc"   # 'differentblue'
             ]
-    
+
     data = [
         dict(
             type='bar',
